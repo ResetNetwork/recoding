@@ -1,3 +1,17 @@
-node_modules
-.DS_Store
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Dependency directories
+node_modules/
+
+# Environment variables
+.env
+
+# Vercel directory
 .vercel
+
+# Junk
+.DS_Store

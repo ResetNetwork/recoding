@@ -1,0 +1,35 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:prettier/recommended",
+    "plugin:promise/recommended"
+  ],
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "node/no-extraneous-import": [
+      "error",
+      {
+        "allowModules": [
+          "lodash"
+        ]
+      }
+    ],
+    "node/shebang": [
+      "error",
+      {
+        "convertPath": {
+          "src/**/*.js": [
+            "^src/(.+?)\\.js$",
+            "dist/$1.js"
+          ]
+        }
+      }
+    ]
+  }
+}
