@@ -74,7 +74,8 @@ const getAll = async () => {
               authors =
                 authors == undefined
                   ? `${creator.lastName}, ${creator.firstName};`
-                  : authors + `${creator.lastName}, ${creator.firstName};`;
+                  : authors +
+                    `${' '}${creator.lastName}, ${creator.firstName};`;
             });
 
             citation.title = citation.data.title;
@@ -101,7 +102,9 @@ const getAll = async () => {
         withAuthor.map((item) => {
           citations.map((citation) => {
             if (item.key == citation.key) {
-              citation.citationAuthor = turndownService.turndown(item.citation);
+              citation.citationAuthor = turndownService
+                .turndown(item.citation)
+                .slice(1, -1);
             }
           });
         });
