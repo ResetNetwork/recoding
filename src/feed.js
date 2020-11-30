@@ -50,7 +50,7 @@ const getAll = async () => {
 
   while (limit > 0) {
     // url from which to pull data from Zotero
-    let urlNote = `https://api.zotero.org/groups/${process.env.ZOTERO_GROUP_ID}/items/top?format=json&include=data,bib,citation&style=chicago-note-bibliography&start=${start}&limit=${limit}`;
+    let urlNote = `https://api.zotero.org/groups/${process.env.ZOTERO_GROUP_ID}/items/top?format=json&include=data,bib,citation&style=chicago-fullnote-bibliography&start=${start}&limit=${limit}`;
 
     let urlAuthor = `https://api.zotero.org/groups/${process.env.ZOTERO_GROUP_ID}/items/top?format=json&include=citation&style=chicago-author-date&start=${start}&limit=${limit}`;
 
@@ -80,7 +80,7 @@ const getAll = async () => {
 
             citation.title = citation.data.title;
             citation.creators = authors;
-            citation.date = citation.data.date;
+            citation.date = citation.meta.parsedDate;
             citation.tags = tags.toString();
             citation.citation = turndownService.turndown(citation.citation);
             citation.bib = turndownService.turndown(citation.bib);
