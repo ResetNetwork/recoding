@@ -28,8 +28,9 @@ const formatCitations = (citations) => {
     'creators',
     'date',
     'tags',
-    'citation',
+    'citationShort',
     'citationAuthor',
+    'citationFull',
     'bib',
   ]; // headers for csv
   const opts = { fields };
@@ -50,11 +51,13 @@ const getAll = async () => {
 
   while (limit > 0) {
     // url from which to pull data from Zotero
-    let urlNote = `https://api.zotero.org/groups/${process.env.ZOTERO_GROUP_ID}/items/top?format=json&include=data,bib,citation&style=chicago-fullnote-bibliography&start=${start}&limit=${limit}`;
+    let urlShortNote = `https://api.zotero.org/groups/${process.env.ZOTERO_GROUP_ID}/items/top?format=json&include=data,bib,citation&style=chicago-note-bibliography&start=${start}&limit=${limit}`;
+
+    let urlFullNote = `https://api.zotero.org/groups/${process.env.ZOTERO_GROUP_ID}/items/top?format=json&include=citation&style=chicago-fullnote-bibliography&start=${start}&limit=${limit}`;
 
     let urlAuthor = `https://api.zotero.org/groups/${process.env.ZOTERO_GROUP_ID}/items/top?format=json&include=citation&style=chicago-author-date&start=${start}&limit=${limit}`;
 
-    await getCitations(urlNote)
+    await getCitations(urlShortNote)
       .then((data) => {
         console.log(`Fetching another ${data.length} items...`);
         limit = data.length;
@@ -82,7 +85,9 @@ const getAll = async () => {
             citation.creators = authors;
             citation.date = citation.meta.parsedDate;
             citation.tags = tags.toString();
-            citation.citation = turndownService.turndown(citation.citation);
+            citation.citationShort = turndownService.turndown(
+              citation.citation,
+            );
             citation.bib = turndownService.turndown(citation.bib);
           });
           citations = citations == undefined ? data : citations.concat(data);
@@ -105,6 +110,23 @@ const getAll = async () => {
               citation.citationAuthor = turndownService
                 .turndown(item.citation)
                 .slice(1, -1);
+            }
+          });
+        });
+        return;
+      })
+      .catch((err) => {
+        console.error(`Whoops, an error occurred: ${err}`);
+      });
+
+    await getCitations(urlFullNote)
+      .then((data) => {
+        const withAuthor = data;
+
+        withAuthor.map((item) => {
+          citations.map((citation) => {
+            if (item.key == citation.key) {
+              citation.citationFull = turndownService.turndown(item.citation);
             }
           });
         });
